@@ -1,30 +1,32 @@
 #include<iostream>
 #include<set>
+#include<priorityQueue.h>
+#include<unordered_map>
 using namespace std;
 
-struct linkedlist_node {
-    struct linkedlist_node *next;
+struct graph_node {
+    struct graph_node *next;
     int data;
     struct linkedEdge * edge;
 };
 
-struct linkedlist {
-    struct linkedlist_node * head;
-    struct linkedlist_node * tail;
+struct graph {
+    struct graph_node * head;
+    struct graph_node * tail;
 };
 
 struct linkedEdge {
     int weight;
-    struct linkedlist_node * path;
+    struct graph_node * path;
     struct linkedEdge * next;
 };
 
-void printList(linkedlist * l){
+void printList(graph * l){
 
     if(l->head==NULL){
         cout << "nothing in list" << endl;
     }
-    struct linkedlist_node * node = l->head;
+    struct graph_node * node = l->head;
     while(node!= NULL){
 
         cout <<"Data: " << node->data << " " << endl;
@@ -39,8 +41,8 @@ void printList(linkedlist * l){
     cout << "end of list" << endl;
 }
 
-void AddNode(linkedlist * l, int data){
-    struct linkedlist_node * temp = new linkedlist_node;
+void AddNode(graph * l, int data){
+    struct graph_node * temp = new graph_node;
     temp->data = data;
     temp->next = NULL;
 
@@ -54,16 +56,16 @@ void AddNode(linkedlist * l, int data){
    
 }
 
-void AddEdge(linkedlist * l, int dataFrom, int dataTo,  int weight){
+void AddEdge(graph * l, int dataFrom, int dataTo,  int weight){
 
     //traverse to 3, add an edge traverse until we hit 2, point the path to 2, 
     //point it to next
     struct linkedEdge * newEdge = new linkedEdge;
     newEdge->weight = weight;
     newEdge->next = NULL;
-    struct linkedlist_node * nodeTrav = l->head;
-    struct linkedlist_node * toPath = NULL;
-    struct linkedlist_node * fromPath = NULL;
+    struct graph_node * nodeTrav = l->head;
+    struct graph_node * toPath = NULL;
+    struct graph_node * fromPath = NULL;
     while(nodeTrav != NULL ){
         if(nodeTrav->data == dataFrom){
             fromPath = nodeTrav;       
@@ -82,7 +84,7 @@ void AddEdge(linkedlist * l, int dataFrom, int dataTo,  int weight){
     
 }
 
-void HasPath(linkedlist *l, int pathFrom, int pathTo){
+void HasPath(graph *l, int pathFrom, int pathTo){
     bool canTravel = false;
     //can we go from 7 to 3? no
     //can we go from 3 to 7? yes
@@ -90,10 +92,10 @@ void HasPath(linkedlist *l, int pathFrom, int pathTo){
     //traverse through linkededge path 
     //struct linkedEdge * edge = NULL;
 
-   set<struct linkedlist_node * > upnext;
-   set<struct linkedlist_node * > visited;
-   set<struct linkedlist_node * >::iterator it;
-   struct linkedlist_node * fromNode = l->head;
+   set<struct graph_node * > upnext;
+   set<struct graph_node * > visited;
+   set<struct graph_node * >::iterator it;
+   struct graph_node * fromNode = l->head;
    while(fromNode != NULL){
        if(fromNode->data == pathFrom){
            break;
@@ -129,15 +131,39 @@ void HasPath(linkedlist *l, int pathFrom, int pathTo){
     cout << "can we travel from " << pathFrom << "to " << pathTo << "? " << canTravel << endl;
 }
 
+graph_node * findNode(graph * graph, int data){
 
-... FindPath(...)
-{
+    graph->head
+
+}
+
+std::vector<int> FindPath(graph * graph, int start, int end){
+
+    graph * head = graph;
+    //two unordered maps, dist & prev
+    std::unordered_map<int, int> distance;
+    distance[start] = 0;
+    std::unordered_map<int, int> previous;
+    priorityQueue<int> pathfinder = new priorityQueue<int>;
+    pathfinder.enqueue(start, 0);
+    //for each node in the graph, todo: check for circular graph?
+    
+    while(!pathfinder.empty()){
+       int currentnode = pathfinder.dequeue();
+       
+       {
+
+       }
+        
+    }
+
+
 }
 
 
 int main(void)
 {
-    struct linkedlist l;
+    struct graph l;
     l.head = NULL;
     l.tail = NULL;
 

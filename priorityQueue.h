@@ -55,6 +55,10 @@ template<typename T> class priorityQueue {
 
             std::cout << "\n" ;
         }
+        
+        bool empty(){
+            return que.empty();
+        }
 
         void updatePriority(T data, int priority){
             size_t index = index_map[data];
