@@ -7,21 +7,21 @@ using namespace std;
 struct graph_node {
     struct graph_node *next;
     int data;
-    struct linkedEdge * edge;
+    struct graph_edge * edge;
 };
 
-struct graph {
+struct graph_t {
     struct graph_node * head;
     struct graph_node * tail;
 };
 
-struct linkedEdge {
+struct graph_edge {
     int weight;
     struct graph_node * path;
-    struct linkedEdge * next;
+    struct graph_edge * next;
 };
 
-void printList(graph * l){
+void printGraph(graph_t * l){
 
     if(l->head==NULL){
         cout << "nothing in list" << endl;
@@ -30,7 +30,7 @@ void printList(graph * l){
     while(node!= NULL){
 
         cout <<"Data: " << node->data << " " << endl;
-        struct linkedEdge * nodeEdge = node->edge;
+        struct graph_edge * nodeEdge = node->edge;
         while(nodeEdge!=NULL){
             cout << "    Edge: " << nodeEdge->path->data;
             cout << "Weight: " << nodeEdge->weight << endl;
@@ -41,7 +41,7 @@ void printList(graph * l){
     cout << "end of list" << endl;
 }
 
-void AddNode(graph * l, int data){
+void AddNode(graph_t * l, int data){
     struct graph_node * temp = new graph_node;
     temp->data = data;
     temp->next = NULL;
@@ -56,11 +56,11 @@ void AddNode(graph * l, int data){
    
 }
 
-void AddEdge(graph * l, int dataFrom, int dataTo,  int weight){
+void AddEdge(graph_t * l, int dataFrom, int dataTo,  int weight){
 
     //traverse to 3, add an edge traverse until we hit 2, point the path to 2, 
     //point it to next
-    struct linkedEdge * newEdge = new linkedEdge;
+    struct graph_edge * newEdge = new graph_edge;
     newEdge->weight = weight;
     newEdge->next = NULL;
     struct graph_node * nodeTrav = l->head;
@@ -84,13 +84,13 @@ void AddEdge(graph * l, int dataFrom, int dataTo,  int weight){
     
 }
 
-void HasPath(graph *l, int pathFrom, int pathTo){
+void HasPath(graph_t *l, int pathFrom, int pathTo){
     bool canTravel = false;
     //can we go from 7 to 3? no
     //can we go from 3 to 7? yes
     //2 to 3? no
     //traverse through linkededge path 
-    //struct linkedEdge * edge = NULL;
+    //struct graph_edge * edge = NULL;
 
    set<struct graph_node * > upnext;
    set<struct graph_node * > visited;
@@ -111,7 +111,7 @@ void HasPath(graph *l, int pathFrom, int pathTo){
             break;
        }
        //check if in visited, if not, add to upnext
-       struct linkedEdge * edges = (*it)->edge;
+       struct graph_edge * edges = (*it)->edge;
        while (edges!=NULL) {
            if(visited.find(edges->path)==visited.end()){
                 visited.insert(edges->path);
@@ -131,15 +131,19 @@ void HasPath(graph *l, int pathFrom, int pathTo){
     cout << "can we travel from " << pathFrom << "to " << pathTo << "? " << canTravel << endl;
 }
 
-graph_node * findNode(graph * graph, int data){
-
-    graph->head
-
+graph_node * findNode(graph_t * graph, int data){
+    graph_node * current = graph->head;
+    while(current!=nullptr){
+        if(current->data == data){
+            return data;
+        }
+        current = current->next;
+    }
+    return nullptr;
 }
 
-std::vector<int> FindPath(graph * graph, int start, int end){
+std::vector<int> FindPath(graph_t * graph, int start, int end){
 
-    graph * head = graph;
     //two unordered maps, dist & prev
     std::unordered_map<int, int> distance;
     distance[start] = 0;
@@ -149,21 +153,24 @@ std::vector<int> FindPath(graph * graph, int start, int end){
     //for each node in the graph, todo: check for circular graph?
     
     while(!pathfinder.empty()){
-       int currentnode = pathfinder.dequeue();
        
-       {
+        graph_node * currentnode = findNode(graph, pathfinder.dequeue());
+        graph_edge * currentedge = currentnode->edge;
+        while(currentedge != nullptr){
+            
 
-       }
+            currentedge = currentedge->next;
+        }
+    
         
     }
-
 
 }
 
 
 int main(void)
 {
-    struct graph l;
+    struct graph_t l;
     l.head = NULL;
     l.tail = NULL;
 
@@ -177,7 +184,7 @@ int main(void)
     AddEdge(&l, 7, 15, 1);
     AddEdge(&l, 11, 2, 4);
     AddEdge(&l, 2, 11, 7);
-    printList(&l);
+    printGraph(&l);
     HasPath(&l, 7, 3);
     HasPath(&l, 3, 7);
     HasPath(&l, 2, 3);
