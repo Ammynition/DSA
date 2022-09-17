@@ -17,7 +17,7 @@ struct graph_t {
 
 struct graph_edge {
     int weight;
-    struct graph_node * path;
+    struct graph_node * neighbor;
     struct graph_edge * next;
 };
 
@@ -32,7 +32,7 @@ void printGraph(graph_t * l){
         cout <<"Data: " << node->data << " " << endl;
         struct graph_edge * nodeEdge = node->edge;
         while(nodeEdge!=NULL){
-            cout << "    Edge: " << nodeEdge->path->data;
+            cout << "    Edge: " << nodeEdge->neighbor->data;
             cout << "Weight: " << nodeEdge->weight << endl;
             nodeEdge = nodeEdge->next;
         }
@@ -80,7 +80,7 @@ void AddEdge(graph_t * l, int dataFrom, int dataTo,  int weight){
     }
     newEdge->next = fromPath->edge;
     fromPath->edge=newEdge;
-    newEdge->path = toPath;
+    newEdge->neighbor = toPath;
     
 }
 
@@ -113,9 +113,9 @@ void HasPath(graph_t *l, int pathFrom, int pathTo){
        //check if in visited, if not, add to upnext
        struct graph_edge * edges = (*it)->edge;
        while (edges!=NULL) {
-           if(visited.find(edges->path)==visited.end()){
-                visited.insert(edges->path);
-                upnext.insert(edges->path);
+           if(visited.find(edges->neighbor)==visited.end()){
+                visited.insert(edges->neighbor);
+                upnext.insert(edges->neighbor);
            }
            edges=edges->next;
        }
@@ -135,7 +135,7 @@ graph_node * findNode(graph_t * graph, int data){
     graph_node * current = graph->head;
     while(current!=nullptr){
         if(current->data == data){
-            return data;
+            return current;
         }
         current = current->next;
     }
@@ -148,23 +148,43 @@ std::vector<int> FindPath(graph_t * graph, int start, int end){
     std::unordered_map<int, int> distance;
     distance[start] = 0;
     std::unordered_map<int, int> previous;
-    priorityQueue<int> pathfinder = new priorityQueue<int>;
+    priorityQueue<int> pathfinder;
     pathfinder.enqueue(start, 0);
     //for each node in the graph, todo: check for circular graph?
-    
-    while(!pathfinder.empty()){
+    bool found = false;
+    while(!pathfinder.empty() && !found){
        
         graph_node * currentnode = findNode(graph, pathfinder.dequeue());
         graph_edge * currentedge = currentnode->edge;
+        std::cout << "line 159" << std::endl;
         while(currentedge != nullptr){
-            
-
+            graph_node * neighbor = currentedge->neighbor;
+            if(neighbor->data == end){
+                found = true;
+                break;
+            }
+            std::cout << "line 165" << std::endl;
+            int alt = distance[currentnode->data] + currentedge->weight;
+            //check if it exists in our map, if it is, is it better?
+            if(distance.find(neighbor->data) == distance.end() || distance[neighbor->data] > alt ){
+                distance[neighbor->data] = alt;
+                previous[neighbor->data] = currentnode->data;
+                pathfinder.enqueue(neighbor->data, alt);
+                std::cout << "line 173" << std::endl;
+            }
             currentedge = currentedge->next;
+            
         }
-    
-        
     }
+    std::vector<int> path;
+    int end_node = end;
 
+    while(previous.find(end_node) != previous.end()){
+        path.push_back(previous[end_node]);
+        end_node = previous[end_node];
+    }
+    std::reverse(path.begin(), path.end());
+    return path;
 }
 
 
@@ -192,5 +212,11 @@ int main(void)
     HasPath(&l, 11, 2);
     HasPath(&l, 11, 3);
     HasPath(&l, 3, 15);
+    std::vector<int> path = FindPath(&l, 3, 15);
+    std::cout << "do we seg fault here?" << std::endl;
+    for(int it:path){
+        std::cout << path[it] << std::endl;
+    }
+
     return 0;
 }
