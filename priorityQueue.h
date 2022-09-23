@@ -38,8 +38,9 @@ template<typename T> class priorityQueue {
             que[0].data = que[last_index].data;
             que[0].priority = que[last_index].priority;
             que.pop_back();
-            size_t index = 0;    
-            downHeapify(index);
+            if(que.size() != 0){
+                downHeapify(0);
+            }
             index_map.erase(head);
             return head;
 
@@ -80,8 +81,6 @@ template<typename T> class priorityQueue {
 
 
         void downHeapify(size_t index){
-
-
             size_t last_index = que.size()-1;
             while(true){
                 size_t RightIdx = 2*index + 2;

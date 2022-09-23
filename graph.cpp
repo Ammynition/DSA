@@ -153,36 +153,34 @@ std::vector<int> FindPath(graph_t * graph, int start, int end){
     //for each node in the graph, todo: check for circular graph?
     bool found = false;
     while(!pathfinder.empty() && !found){
-       
         graph_node * currentnode = findNode(graph, pathfinder.dequeue());
         graph_edge * currentedge = currentnode->edge;
-        std::cout << "line 159" << std::endl;
         while(currentedge != nullptr){
             graph_node * neighbor = currentedge->neighbor;
-            if(neighbor->data == end){
-                found = true;
-                break;
-            }
-            std::cout << "line 165" << std::endl;
+            
             int alt = distance[currentnode->data] + currentedge->weight;
             //check if it exists in our map, if it is, is it better?
             if(distance.find(neighbor->data) == distance.end() || distance[neighbor->data] > alt ){
                 distance[neighbor->data] = alt;
                 previous[neighbor->data] = currentnode->data;
                 pathfinder.enqueue(neighbor->data, alt);
-                std::cout << "line 173" << std::endl;
             }
             currentedge = currentedge->next;
             
+            if(neighbor->data == end){
+                found = true;
+                break;
+            }
         }
     }
     std::vector<int> path;
     int end_node = end;
-
+    
     while(previous.find(end_node) != previous.end()){
-        path.push_back(previous[end_node]);
+        path.push_back(end_node);
         end_node = previous[end_node];
     }
+    path.push_back(start);
     std::reverse(path.begin(), path.end());
     return path;
 }
@@ -193,7 +191,17 @@ int main(void)
     struct graph_t l;
     l.head = NULL;
     l.tail = NULL;
-
+    AddNode(&l, 1);
+    AddNode(&l, 2);
+    AddNode(&l, 3);
+    AddNode(&l, 4);
+    AddNode(&l, 5);
+    AddEdge(&l, 1, 2, 5);
+    AddEdge(&l, 1, 3, 1);
+    AddEdge(&l, 3, 1, 1);
+    AddEdge(&l, 2, 3, 1);
+    AddEdge(&l, 3, 5, 1);
+/*
     AddNode(&l, 3);
     AddNode(&l, 11);
     AddNode(&l, 2);
@@ -212,10 +220,10 @@ int main(void)
     HasPath(&l, 11, 2);
     HasPath(&l, 11, 3);
     HasPath(&l, 3, 15);
-    std::vector<int> path = FindPath(&l, 3, 15);
-    std::cout << "do we seg fault here?" << std::endl;
+  */
+    std::vector<int> path = FindPath(&l, 1, 4);
     for(int it:path){
-        std::cout << path[it] << std::endl;
+        std::cout << it << std::endl;
     }
 
     return 0;
