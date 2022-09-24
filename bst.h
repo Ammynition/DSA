@@ -8,11 +8,11 @@ template<typename T> struct treeNode{
 template <typename T> class BST {
     public:
         int numNodes;
-        treeNode * head;
-        
+        treeNode<T> * head;
+        BST();
         void add(T data);
         void print();
         void remove(T data);
-        void find(T data);
+        treeNode<T> * find(T data);
 
 };
