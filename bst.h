@@ -65,8 +65,12 @@ template <typename T>
 void BST<T>::print(){
     treeNode<T> * current = head;
     //keep track of tabs with size of parents
+    //when you change direction, add a line
+    //when you keep going the same way, add spaces
     std::vector<treeNode<T> *> parents;
     std::unordered_set<treeNode<T> *> printed;
+    std::vector<string> indent;
+    bool right = true;
     while(current!=nullptr){
         //check right
         //if right, push to parents
@@ -79,11 +83,18 @@ void BST<T>::print(){
         if(current->right!=nullptr && printed.find(current->right) == printed.end()){
             parents.push_back(current);
             current = current->right;
+            if(right){
+                indent.push_back("     ");
+            }
+            else{
+                indent.push_back("\u2502    ");
+            }
+            right = true;
         }
         else{
             if(printed.find(current) == printed.end()){
                 for(int i =0; i<parents.size(); i++){
-                    std::cout << "\t";
+                    std::cout << "\u2500\u2500\u2500\u2500\u2500\u2500\u2500";
                 }
                 std::cout << current->data << std::endl;
                 printed.insert(current);
