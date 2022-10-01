@@ -7,6 +7,7 @@ using namespace std;
 struct graph_node {
     struct graph_node *next;
     int data;
+    int group;
     struct graph_edge * edge;
 };
 
@@ -45,7 +46,7 @@ void AddNode(graph_t * l, int data){
     struct graph_node * temp = new graph_node;
     temp->data = data;
     temp->next = NULL;
-
+    temp->group = 0;
     if(l->head == NULL){
         l->head = temp;
     }
@@ -184,14 +185,46 @@ std::vector<int> FindPath(graph_t * graph, int start, int end){
     std::reverse(path.begin(), path.end());
     return path;
 }
+std::<vector<std::vector<int>> disjointSet(graph_t graph){
+    //need a vector for each seperate graph
+    std::<vector<std::vector<int>> listofgraphs;
+    std::unordered_map<int, int> redirects;
+    std::unordered_map<int, unordered_set<graph_node> > visitedGroups;
+    graph_node nodeTrav = graph->head;
+    int group_num = 1;
+    while(nodeTrav!=nullptr){
+        //check node group#, if it's not 0, it's already in our set
+        if(nodeTrav->
+        //if it is zero, add it to the visited groups, and start going through the neighbors
+        //
+        //
 
+        nodeTrav = nodeTrav->next;
+    }
+
+
+
+}
 
 int main(void)
 {
     struct graph_t l;
     l.head = NULL;
     l.tail = NULL;
-    AddNode(&l, 1);
+    
+    AddNode(&l, 12);
+    AddNode(&l, 5);
+    AddNode(&l, 7);
+    AddNode(&l, 45);
+    AddNode(&l, 16);
+    AddNode(&l, 22);
+
+    AddEdge(&l, 12, 5, 4);
+    AddEdge(&l, 5, 7, 7);
+    AddEdge(&l, 5, 45, 8);
+    AddEdge(&l, 7, 12, 3);
+    AddEdge(&l, 16, 22, 10);
+    /*AddNode(&l, 1);
     AddNode(&l, 2);
     AddNode(&l, 3);
     AddNode(&l, 4);
@@ -201,7 +234,7 @@ int main(void)
     AddEdge(&l, 3, 1, 1);
     AddEdge(&l, 2, 3, 1);
     AddEdge(&l, 3, 5, 1);
-/*
+
     AddNode(&l, 3);
     AddNode(&l, 11);
     AddNode(&l, 2);
