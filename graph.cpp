@@ -194,10 +194,23 @@ std::<vector<std::vector<int>> disjointSet(graph_t graph){
     int group_num = 1;
     while(nodeTrav!=nullptr){
         //check node group#, if it's not 0, it's already in our set
-        if(nodeTrav->
-        //if it is zero, add it to the visited groups, and start going through the neighbors
-        //
-        //
+        if(nodeTrav->group == 0){
+            // hasn't been added to visited before!
+            //add to visited
+            visitedGroups[group_num].insert(nodeTrav->data);
+            //change group number for specific node
+            nodeTrav->group = group_num;
+            //check for neighbors
+            graph_edge NeighborCheck = nodeTrav->edge;
+            while(graph_edge !=nullptr){
+            
+            }
+        }
+        else{
+            //redirect
+            redirects[nodeTrav->group] = group_num;
+
+        }
 
         nodeTrav = nodeTrav->next;
     }
