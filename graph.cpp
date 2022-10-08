@@ -2,6 +2,7 @@
 #include<set>
 #include<priorityQueue.h>
 #include<unordered_map>
+#include<unordered_set>
 using namespace std;
 
 struct graph_node {
@@ -185,37 +186,74 @@ std::vector<int> FindPath(graph_t * graph, int start, int end){
     std::reverse(path.begin(), path.end());
     return path;
 }
-std::<vector<std::vector<int>> disjointSet(graph_t graph){
+bool disjointSet(graph_t * graph){
     //need a vector for each seperate graph
-    std::<vector<std::vector<int>> listofgraphs;
+    bool listofgraphs = true;
     std::unordered_map<int, int> redirects;
-    std::unordered_map<int, unordered_set<graph_node> > visitedGroups;
-    graph_node nodeTrav = graph->head;
+    std::unordered_map<int, std::unordered_set< graph_node *> > visitedGroups;
+    graph_node * nodeTrav = graph->head;
     int group_num = 1;
     while(nodeTrav!=nullptr){
         //check node group#, if it's not 0, it's already in our set
         if(nodeTrav->group == 0){
             // hasn't been added to visited before!
             //add to visited
-            visitedGroups[group_num].insert(nodeTrav->data);
+            visitedGroups[group_num].insert(nodeTrav);
             //change group number for specific node
             nodeTrav->group = group_num;
             //check for neighbors
-            graph_edge NeighborCheck = nodeTrav->edge;
-            while(graph_edge !=nullptr){
-            
-            }
-        }
-        else{
-            //redirect
-            redirects[nodeTrav->group] = group_num;
+            //graph_edge NeighborCheck = nodeTrav->edge;
+            //find visited
+            //if it has a group number, it's been visited
+            //check group number of graph node 
+            std::unordered_set<graph_node *> upNext;
+            std::unordered_set<graph_node *>::iterator it;
+            upNext.insert(nodeTrav);
+            while(upNext.size() != 0){
+                it = upNext.begin();
+                graph_edge * NeighborCheck = (*it)->edge;
+                while(NeighborCheck !=nullptr){
+                    if(NeighborCheck->neighbor->group == 0){
+                        //not in our visited groups, add it to the same group number
+                        visitedGroups[group_num].insert(NeighborCheck->neighbor);
+                        upNext.insert(NeighborCheck->neighbor);
+                    }
+                    else{
+                        if(redirects.find(group_num) == redirects.end()){
+                            redirects[group_num] = NeighborCheck->neighbor->group; //if it's not mapped to anything, we're home free
+                        }
+                       // if(redirects.find(NeighborCheck->Neighbor->group) != redirects.end() && ){
+                       //     //hold a temporary variable
+                       //     int old_group_mapping = redirects[group_num];
+                       //     redirects[old_group_mapping] = NeighborCheck->Neighbor->group;
+                       //     redirects[group_num] = NeighborCheck->Neighbor->group;
+                       // } 
+                        else{
+                            //check to see what it's mapped to currently, and change it 
+                            //3 > 1
+                            //3 -> 1
+                            int current_group_mapping = redirects[group_num];
+                            while(redirects.find(current_group_mapping) != redirects.end()){
 
-        }
+                                int next_group_mapping = redirects[current_group_mapping];
+                                redirects[next_group_mapping] = current_group_mapping;
+                                current_group_mapping = next_group_mapping;
+                            }
+
+                        }
+                    }
+                    NeighborCheck = NeighborCheck->next;
+                }
+                upNext.erase(*it);
+             }
+        }   
 
         nodeTrav = nodeTrav->next;
     }
-
-
+    for(auto i:redirects){
+        std::cout << i.first << " -> " << i.second << std::endl;
+    }
+    return listofgraphs;
 
 }
 
@@ -267,10 +305,12 @@ int main(void)
     HasPath(&l, 11, 3);
     HasPath(&l, 3, 15);
   */
-    std::vector<int> path = FindPath(&l, 1, 4);
-    for(int it:path){
-        std::cout << it << std::endl;
-    }
+
+    bool fred = disjointSet(&l);
+  // std::vector<int> path = FindPath(&l, 1, 4);
+  //  for(int it:path){
+  //     std::cout << it << std::endl;
+  //  }
 
     return 0;
 }
